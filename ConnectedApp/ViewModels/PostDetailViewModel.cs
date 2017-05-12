@@ -24,7 +24,11 @@ namespace ConnectedApp.ViewModels
         public override void OnNavigatedTo(NavigationParameters parameters)
         {
             string postId = parameters["id"] as string;
-            _fakeService.GetPost(postId).Subscribe(item => Post = item);
+            _fakeService.GetPost(postId).Subscribe(item =>
+            {
+                if (item != null)
+                    Post = item;
+            });
         }
     }
 }

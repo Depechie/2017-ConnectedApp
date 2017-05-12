@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using Akavache;
 using ConnectedApp.Models;
 using ConnectedApp.Services.Interfaces;
+using Plugin.Connectivity;
 
 namespace ConnectedApp.Services
 {
@@ -50,8 +51,13 @@ namespace ConnectedApp.Services
             },
                                             offset =>
             {
-                TimeSpan elapsed = DateTimeOffset.Now - offset;
-                return elapsed > _cachedPostTime;
+                if (CrossConnectivity.Current.IsConnected)
+                {
+                    TimeSpan elapsed = DateTimeOffset.Now - offset;
+                    return elapsed > _cachedPostTime;
+                }
+                else
+                    return false;
             });
         }
 
@@ -74,8 +80,12 @@ namespace ConnectedApp.Services
             },
                                             offset =>
             {
-                TimeSpan elapsed = DateTimeOffset.Now - offset;
-                return elapsed > _cachedPostsTime;
+                if (CrossConnectivity.Current.IsConnected)
+                {
+                    TimeSpan elapsed = DateTimeOffset.Now - offset;
+                    return elapsed > _cachedPostsTime;
+                }
+                return false;
             });
         }
     }
