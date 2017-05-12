@@ -5,6 +5,8 @@ using ConnectedApp.Views;
 using Prism.Unity;
 using Xamarin.Forms;
 using Microsoft.Practices.Unity;
+using Akavache;
+using System.Reactive.Linq;
 
 namespace ConnectedApp
 {
@@ -15,6 +17,10 @@ namespace ConnectedApp
         protected override void OnInitialized()
         {
             InitializeComponent();
+
+            BlobCache.ApplicationName = "LazyDevCache";
+            BlobCache.EnsureInitialized();
+
             NavigationService.NavigateAsync("NavigationPage/MainPage");
         }
 
@@ -27,6 +33,14 @@ namespace ConnectedApp
 
             Container.RegisterType<IFakeAPI, FakeAPI>();
             Container.RegisterType<IFakeService, FakeService>();
+        }
+
+        protected override void OnSleep()
+        {
+            //https://github.com/akavache/Akavache/issues/342
+            //BlobCache.Shutdown().Wait();
+            BlobCache.LocalMachine.Flush().Wait();
+            base.OnSleep();
         }
     }
 }

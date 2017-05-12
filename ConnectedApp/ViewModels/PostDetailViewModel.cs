@@ -21,10 +21,10 @@ namespace ConnectedApp.ViewModels
             _fakeService = fakeService;
         }
 
-        public async override void OnNavigatedTo(NavigationParameters parameters)
+        public override void OnNavigatedTo(NavigationParameters parameters)
         {
             string postId = parameters["id"] as string;
-            Post = await _fakeService.GetPost(postId);
+            _fakeService.GetPost(postId).Subscribe(item => Post = item);
         }
     }
 }
