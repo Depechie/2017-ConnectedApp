@@ -11,5 +11,11 @@ namespace ConnectedApp.Views
         {
             InitializeComponent();
         }
+
+        protected override void OnAppearing()
+        {
+            base.OnAppearing();
+            PostListView.SelectedItem = null;
+        }
     }
 }

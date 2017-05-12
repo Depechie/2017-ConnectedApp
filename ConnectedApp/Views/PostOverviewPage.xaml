@@ -6,5 +6,18 @@
 		Title="Posts"
 		x:Class="ConnectedApp.Views.PostOverviewPage">
 	<ContentPage.Content>
+		<ListView x:Name="PostListView"
+				  ItemsSource="{Binding Posts}"
+				  SelectedItem="{Binding SelectedPost}">
+			<ListView.ItemTemplate>
+				<DataTemplate>
+					<ViewCell>
+						<Label Text="{Binding Title}"
+							   LineBreakMode="TailTruncation"
+							   Margin="15,10" />
+					</ViewCell>
+				</DataTemplate>
+			</ListView.ItemTemplate>
+		</ListView>
 	</ContentPage.Content>
 </ContentPage>
