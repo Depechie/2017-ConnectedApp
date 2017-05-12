@@ -158,6 +158,9 @@
     <Reference Include="Plugin.Connectivity">
       <HintPath>..\packages\Xam.Plugin.Connectivity.2.3.0\lib\MonoAndroid10\Plugin.Connectivity.dll</HintPath>
     </Reference>
+    <Reference Include="Polly">
+      <HintPath>..\packages\Polly.5.1.0\lib\netstandard1.0\Polly.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\ConnectedApp\ConnectedApp.csproj">

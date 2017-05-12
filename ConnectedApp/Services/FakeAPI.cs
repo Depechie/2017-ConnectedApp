@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Net;
 using System.Threading.Tasks;
 using ConnectedApp.Models;
 using ConnectedApp.Services.Interfaces;
@@ -16,6 +17,8 @@ namespace ConnectedApp.Services
         public const string FakeAPIBase = "https://jsonplaceholder.typicode.com";
 
         private IFakeAPI _internalAPI;
+
+        public int Retry { get; set; }
 
         public FakeAPI()
         {
@@ -34,7 +37,16 @@ namespace ConnectedApp.Services
 
         public Task<List<Post>> GetPosts()
         {
-            return _internalAPI.GetPosts();
+            return ExceptionWrapper();
+        }
+
+        private Task<List<Post>> ExceptionWrapper()
+        {
+            ++Retry;
+            if (Retry == 3)
+                return _internalAPI.GetPosts();
+            else
+                throw new WebException("Return dummy exception for debugging purpose");
         }
     }
 }

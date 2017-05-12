@@ -2,11 +2,13 @@
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
+using System.Net;
 using System.Threading.Tasks;
 using Akavache;
 using ConnectedApp.Models;
 using ConnectedApp.Services.Interfaces;
 using Plugin.Connectivity;
+using Polly;
 
 namespace ConnectedApp.Services
 {
@@ -66,12 +68,15 @@ namespace ConnectedApp.Services
             return _cache.GetAndFetchLatest(CacheKeyPosts,
                                             async () =>
             {
-                var result = await _fakeAPI.GetPosts();
+                ((FakeAPI)_fakeAPI).Retry = 0;
+
+                var result = await Policy.Handle<WebException>().WaitAndRetryAsync(retryCount: 3, sleepDurationProvider: retryAttempt => TimeSpan.FromSeconds(Math.Pow(2, retryAttempt))).ExecuteAsync(async () => await _fakeAPI.GetPosts());
+
                 await Task.Delay(1000); //Fake longer network request, so we visually see the refresh happening on screen!
 
-            //Add visual timestamp to title of a post, this way we see what time the data has been fechted
-            result = result.OrderBy(item => item.Id).Select(item =>
-        {
+                //Add visual timestamp to title of a post, this way we see what time the data has been fechted
+                result = result.OrderBy(item => item.Id).Select(item =>
+                {
                     item.Title = string.Concat(DateTime.Now.ToString("T", CultureInfo.InvariantCulture), " - ", item.Title);
                     return item;
                 }).ToList();
