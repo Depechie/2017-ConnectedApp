@@ -1,29 +1,27 @@
-﻿using Xamarin.Forms;
+﻿using ConnectedAppNetStandard.ViewModels;
+using ConnectedAppNetStandard.Views;
+using Prism.Unity;
+using Xamarin.Forms;
 
 namespace ConnectedApp
 {
-    public partial class App : Application
+    public partial class App : PrismApplication
     {
-        public App()
+        public App(IPlatformInitializer initializer = null) : base(initializer)
+        {
+        }
+
+        protected override void OnInitialized()
         {
             InitializeComponent();
-
-            MainPage = new ConnectedAppPage();
+            NavigationService.NavigateAsync("NavigationPage/MainPage");
         }
 
-        protected override void OnStart()
+        protected override void RegisterTypes()
         {
-            // Handle when your app starts
-        }
-
-        protected override void OnSleep()
-        {
-            // Handle when your app sleeps
-        }
-
-        protected override void OnResume()
-        {
-            // Handle when your app resumes
+            Container.RegisterTypeForNavigation<NavigationPage>();
+            Container.RegisterTypeForNavigation<MainPage, MainViewModel>();
+            Container.RegisterTypeForNavigation<PostOverviewPage, PostOverviewViewModel>();
         }
     }
 }
