@@ -1,7 +1,11 @@
-﻿using ConnectedAppNetStandard.ViewModels;
+﻿using ConnectedAppNetStandard.Services.Interfaces;
+using ConnectedAppNetStandard.ViewModels;
 using ConnectedAppNetStandard.Views;
 using Prism.Unity;
 using Xamarin.Forms;
+using CommonServiceLocator;
+using ConnectedAppNetStandard.Services;
+using Unity;
 
 namespace ConnectedApp
 {
@@ -22,6 +26,10 @@ namespace ConnectedApp
             Container.RegisterTypeForNavigation<NavigationPage>();
             Container.RegisterTypeForNavigation<MainPage, MainViewModel>();
             Container.RegisterTypeForNavigation<PostOverviewPage, PostOverviewViewModel>();
+            Container.RegisterTypeForNavigation<PostDetailPage, PostDetailViewModel>();
+
+            Container.RegisterType<IFakeAPI, FakeAPI>();
+            Container.RegisterType<IFakeService, FakeService>();
         }
     }
 }
