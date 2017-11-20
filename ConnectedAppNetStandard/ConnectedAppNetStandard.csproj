@@ -24,6 +24,7 @@
     <PackageReference Include="Prism.Unity.Forms" Version="7.0.0.269-pre" />
     <PackageReference Include="refit" Version="4.0.1" />
     <PackageReference Include="Unity" Version="5.3.0" />
+    <PackageReference Include="akavache" Version="5.0.0" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="ViewModels\" />
@@ -31,5 +32,6 @@
     <Folder Include="Models\" />
     <Folder Include="Services\" />
     <Folder Include="Services\Interfaces\" />
+    <Folder Include="Extensions\" />
   </ItemGroup>
 </Project>

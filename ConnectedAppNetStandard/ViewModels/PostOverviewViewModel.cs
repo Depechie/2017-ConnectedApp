@@ -1,4 +1,6 @@
-﻿using System.Collections.ObjectModel;
+﻿using System;
+using System.Collections.ObjectModel;
+using ConnectedAppNetStandard.Extensions;
 using ConnectedAppNetStandard.Models;
 using ConnectedAppNetStandard.Services.Interfaces;
 using Prism.Navigation;
@@ -41,13 +43,15 @@ namespace ConnectedAppNetStandard.ViewModels
             _fakeService = fakeService;
         }
 
-        public async override void OnNavigatedTo(NavigationParameters parameters)
+        public override void OnNavigatedTo(NavigationParameters parameters)
         {
-            if (Posts == null || Posts.Count == 0)
+            //TODO: Validate if loading posts each time we navigate to the page is a good idea? We will also trigger this going back and forth to detail
+            _fakeService.GetPosts().Subscribe(items =>
             {
-                var result = await FakeService.GetPosts();
-                Posts = new ObservableCollection<Post>(result);
-            }
+                //TODO: Create a correct merge operation
+                Posts.Clear();
+                Posts.Merge(items);
+            });
         }
     }
 }

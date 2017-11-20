@@ -208,6 +208,7 @@
   <ItemGroup>
     <Compile Include="Main.cs" />
     <Compile Include="AppDelegate.cs" />
+    <Compile Include="AkavacheSqliteLinkerOverride.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\ConnectedAppNetStandard\ConnectedAppNetStandard.csproj">

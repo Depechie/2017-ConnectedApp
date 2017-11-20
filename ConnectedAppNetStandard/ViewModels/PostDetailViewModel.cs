@@ -5,7 +5,7 @@ using Prism.Navigation;
 
 namespace ConnectedAppNetStandard.ViewModels
 {
-    public class PostDetailViewModel: ViewModelBase
+    public class PostDetailViewModel : ViewModelBase
     {
         private readonly IFakeService _fakeService;
 
@@ -21,10 +21,10 @@ namespace ConnectedAppNetStandard.ViewModels
             _fakeService = fakeService;
         }
 
-        public async override void OnNavigatedTo(NavigationParameters parameters)
+        public override void OnNavigatedTo(NavigationParameters parameters)
         {
             string postId = parameters["id"] as string;
-            Post = await _fakeService.GetPost(postId);
+            _fakeService.GetPost(postId).Subscribe(item => Post = item);
         }
     }
 }
