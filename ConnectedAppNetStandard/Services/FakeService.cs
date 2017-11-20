@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using Akavache;
 using ConnectedAppNetStandard.Models;
 using ConnectedAppNetStandard.Services.Interfaces;
+using Plugin.Connectivity;
 
 namespace ConnectedAppNetStandard.Services
 {
@@ -73,8 +74,13 @@ namespace ConnectedAppNetStandard.Services
 
         private bool IsOffsetReached(DateTimeOffset offset, TimeSpan timeSpan)
         {
-            TimeSpan elapsed = DateTimeOffset.Now - offset;
-            return elapsed > timeSpan;
+            if (CrossConnectivity.Current.IsConnected)
+            {
+                TimeSpan elapsed = DateTimeOffset.Now - offset;
+                return elapsed > timeSpan;
+            }
+            else
+                return false;
         }
     }
 }

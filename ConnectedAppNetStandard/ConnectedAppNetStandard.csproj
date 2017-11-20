@@ -25,6 +25,7 @@
     <PackageReference Include="refit" Version="4.0.1" />
     <PackageReference Include="Unity" Version="5.3.0" />
     <PackageReference Include="akavache" Version="5.0.0" />
+    <PackageReference Include="Xam.Plugin.Connectivity" Version="3.0.3" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="ViewModels\" />

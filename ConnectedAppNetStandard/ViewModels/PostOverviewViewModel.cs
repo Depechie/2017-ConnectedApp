@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.ObjectModel;
+using System.Linq;
 using ConnectedAppNetStandard.Extensions;
 using ConnectedAppNetStandard.Models;
 using ConnectedAppNetStandard.Services.Interfaces;
@@ -48,9 +49,13 @@ namespace ConnectedAppNetStandard.ViewModels
             //TODO: Validate if loading posts each time we navigate to the page is a good idea? We will also trigger this going back and forth to detail
             _fakeService.GetPosts().Subscribe(items =>
             {
-                //TODO: Create a correct merge operation
-                Posts.Clear();
-                Posts.Merge(items);
+                //Only clear and merge posts if we retrieve actual data
+                if (items != null && items.Any())
+                {
+                    //TODO: Create a correct merge operation
+                    Posts.Clear();
+                    Posts.Merge(items);
+                }
             });
         }
     }
