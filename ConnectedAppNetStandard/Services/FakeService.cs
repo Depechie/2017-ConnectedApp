@@ -9,6 +9,7 @@ using ConnectedAppNetStandard.Models;
 using ConnectedAppNetStandard.Services.Interfaces;
 using Plugin.Connectivity;
 using Polly;
+using Polly.Wrap;
 
 namespace ConnectedAppNetStandard.Services
 {
@@ -21,17 +22,35 @@ namespace ConnectedAppNetStandard.Services
         private readonly IFakeAPI _fakeAPI;
         private readonly IBlobCache _cache;
 
+        private Polly.CircuitBreaker.CircuitBreakerPolicy _circuitBreakerPolicy;
+        private Policy<List<Post>> _policy;
+
         //Cache posts for 30 sec
-        private readonly TimeSpan _cachedPostsTime = new TimeSpan(0, 0, 30);
+        private readonly TimeSpan _cachedPostsTime = new TimeSpan(0, 0, 15);
         //Cache detail of 30 sec
-        private readonly TimeSpan _cachedPostTime = new TimeSpan(0, 0, 30);
+        private readonly TimeSpan _cachedPostTime = new TimeSpan(0, 0, 15);
 
         private const string CacheKeyPosts = "posts";
 
         public FakeService(IFakeAPI fakeAPI)
         {
             _fakeAPI = fakeAPI;
+            ((FakeAPI)_fakeAPI).Retry = 0;
+
             _cache = BlobCache.LocalMachine;
+
+            _circuitBreakerPolicy = Policy
+                .Handle<Exception>()
+                .CircuitBreakerAsync(exceptionsAllowedBeforeBreaking: 2, durationOfBreak: TimeSpan.FromSeconds(60));
+
+            _policy = Policy<List<Post>>
+                .Handle<Exception>()
+                .FallbackAsync<List<Post>>(fallbackAction: async (System.Threading.CancellationToken arg) =>
+                {
+                    System.Diagnostics.Debug.WriteLine("Fallback call");
+                    return await _fakeAPI.GetPostsFallback();
+                })
+                .WrapAsync(_circuitBreakerPolicy);
         }
 
         public Task<List<Comment>> GetCommentsByPost(string id)
@@ -61,9 +80,7 @@ namespace ConnectedAppNetStandard.Services
 
         private async Task<List<Post>> GetPostsAsync()
         {
-            ((FakeAPI)_fakeAPI).Retry = 0;
-
-            var result = await Policy.Handle<WebException>().WaitAndRetryAsync(retryCount: 3, sleepDurationProvider: retryAttempt => TimeSpan.FromSeconds(Math.Pow(2, retryAttempt))).ExecuteAsync(async () => await _fakeAPI.GetPosts());
+            var result = await _policy.ExecuteAsync(async () => await _fakeAPI.GetPosts());
 
             await Task.Delay(1000); //Fake longer network request, so we visually see the refresh happening on screen!
 

@@ -11,6 +11,9 @@ namespace ConnectedAppNetStandard.Services.Interfaces
         [Get("/posts")]
         Task<List<Post>> GetPosts();
 
+        [Get("/posts")]
+        Task<List<Post>> GetPostsFallback();
+
         [Get("/posts/{id}")]
         Task<Post> GetPost(string id);
 

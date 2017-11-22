@@ -13,6 +13,12 @@ namespace ConnectedApp
 {
     public partial class App : PrismApplication
     {
+        public IFakeService FakeService
+        {
+            get;
+            private set;
+        }
+
         public App(IPlatformInitializer initializer = null) : base(initializer) { }
 
         protected override void OnInitialized()
@@ -33,7 +39,8 @@ namespace ConnectedApp
             Container.RegisterTypeForNavigation<PostDetailPage, PostDetailViewModel>();
 
             Container.RegisterType<IFakeAPI, FakeAPI>();
-            Container.RegisterType<IFakeService, FakeService>();
+
+            Container.RegisterSingleton<IFakeService, FakeService>();
         }
 
         protected override void OnSleep()

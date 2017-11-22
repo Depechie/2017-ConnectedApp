@@ -31,14 +31,6 @@ namespace ConnectedAppNetStandard.ViewModels
             }
         }
 
-        public IFakeService FakeService
-        {
-            get
-            {
-                return _fakeService;
-            }
-        }
-
         public PostOverviewViewModel(INavigationService navigationService, IFakeService fakeService) : base(navigationService)
         {
             _fakeService = fakeService;

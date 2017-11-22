@@ -35,6 +35,11 @@ namespace ConnectedAppNetStandard.Services
             return _internalAPI.GetPost(id);
         }
 
+        public Task<List<Post>> GetPostsFallback()
+        {
+            return _internalAPI.GetPosts();
+        }
+
         public Task<List<Post>> GetPosts()
         {
             return ExceptionWrapper();
@@ -43,10 +48,18 @@ namespace ConnectedAppNetStandard.Services
         private Task<List<Post>> ExceptionWrapper()
         {
             ++Retry;
-            if (Retry == 3)
+            System.Diagnostics.Debug.WriteLine($"Service retry {Retry}");
+
+            if (Retry >= 3)
+            {
+                System.Diagnostics.Debug.WriteLine("Service working");
                 return _internalAPI.GetPosts();
+            }
             else
+            {
+                System.Diagnostics.Debug.WriteLine("Service exception");
                 throw new WebException("Return dummy exception for debugging purpose");
+            }
         }
     }
 }
